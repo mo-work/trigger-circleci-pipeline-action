@@ -12690,30 +12690,51 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(5438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(6545);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(5438);
+// EXTERNAL MODULE: ./node_modules/axios/index.js
+var axios = __nccwpck_require__(6545);
+var axios_default = /*#__PURE__*/__nccwpck_require__.n(axios);
+;// CONCATENATED MODULE: ./extractTargetUrl.js
+
+
+const REGEX = /\[Visit Preview\]\((https:\/\/[\w-]+-team-mo.vercel.app)\)/
+
+const body = (0,core.getInput)("VERCEL_COMMEMT_BODY");
+
+const match = REGEX.exec(body)[1];
+
+const extractTargetUrl = () => (
+    match ? match : ""
+);
+
+/* harmony default export */ const extractTargetUrl_0 = (extractTargetUrl);
+
+;// CONCATENATED MODULE: ./index.js
 
 
 
 
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Preparing CircleCI Pipeline Trigger");
-const repoOrg = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
-const repoName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Org: ${repoOrg}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Repo: ${repoName}`);
-const ref = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref;
+
+
+(0,core.startGroup)("Preparing CircleCI Pipeline Trigger");
+const repoOrg = github.context.repo.owner;
+const repoName = github.context.repo.repo;
+(0,core.info)(`Org: ${repoOrg}`);
+(0,core.info)(`Repo: ${repoName}`);
+const ref = github.context.ref;
 const headRef = process.env.GITHUB_HEAD_REF;
 
 const getBranch = () => {
   if (ref.startsWith("refs/heads/")) {
     return ref.substring(11);
   } else if (ref.startsWith("refs/pull/") && headRef) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
+    (0,core.info)(`This is a PR. Using head ref ${headRef} instead of ${ref}`);
     return headRef;
   }
   return ref;
@@ -12726,22 +12747,27 @@ const getTag = () => {
 
 const headers = {
   "content-type": "application/json",
-  "x-attribution-login": _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
-  "x-attribution-actor-id": _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
+  "x-attribution-login": github.context.actor,
+  "x-attribution-actor-id": github.context.actor,
   "Circle-Token": `${process.env.CCI_TOKEN}`,
 };
 const parameters = {
-  GHA_Actor: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.actor,
-  GHA_Action: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.action,
-  GHA_Event: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName,
+  GHA_Actor: github.context.actor,
+  GHA_Action: github.context.action,
+  GHA_Event: github.context.eventName,
 };
 
-const metaData = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("GHA_Meta");
+const metaData = (0,core.getInput)("GHA_Meta");
 if (metaData.length > 0) {
   Object.assign(parameters, { GHA_Meta: metaData });
 }
 
-const body = {
+// Start: Mo customisation
+Object.assign(parameters, { GHA_Meta: extractTargetUrl_0() });
+
+// End: Mo customisation
+
+const index_body = {
   parameters: parameters,
 };
 
@@ -12749,34 +12775,34 @@ const tag = getTag();
 const branch = getBranch();
 
 if (tag) {
-  Object.assign(body, { tag });
+  Object.assign(index_body, { tag });
 } else {
-  Object.assign(body, { branch });
+  Object.assign(index_body, { branch });
 }
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
 
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering URL: ${url}`);
+(0,core.info)(`Triggering CircleCI Pipeline for ${repoOrg}/${repoName}`);
+(0,core.info)(`Triggering URL: ${url}`);
 if (tag) {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering tag: ${tag}`);
+  (0,core.info)(`Triggering tag: ${tag}`);
 } else {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Triggering branch: ${branch}`);
+  (0,core.info)(`Triggering branch: ${branch}`);
 }
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Parameters:\n${JSON.stringify(parameters)}`);
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
+(0,core.info)(`Parameters:\n${JSON.stringify(parameters)}`);
+(0,core.endGroup)();
 
-axios__WEBPACK_IMPORTED_MODULE_2___default().post(url, body, { headers: headers })
+axios_default().post(url, index_body, { headers: headers })
   .then((response) => {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Successfully triggered CircleCI Pipeline");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
+    (0,core.startGroup)("Successfully triggered CircleCI Pipeline");
+    (0,core.info)(`CircleCI API Response: ${JSON.stringify(response.data)}`);
+    (0,core.endGroup)();
   })
   .catch((error) => {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup)("Failed to trigger CircleCI Pipeline");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.error)(error);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
+    (0,core.startGroup)("Failed to trigger CircleCI Pipeline");
+    (0,core.error)(error);
+    (0,core.setFailed)(error.message);
+    (0,core.endGroup)();
   });
 
 })();

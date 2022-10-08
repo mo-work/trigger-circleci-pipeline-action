@@ -9,7 +9,7 @@ import {
 import { context } from "@actions/github";
 import axios from "axios";
 
-import extractTargetUrl from "./extractTargetUrl"
+import extractTargetUrl from "./extractTargetUrl";
 
 startGroup("Preparing CircleCI Pipeline Trigger");
 const repoOrg = context.repo.owner;
