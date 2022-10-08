@@ -9,6 +9,8 @@ import {
 import { context } from "@actions/github";
 import axios from "axios";
 
+import extractTargetUrl from "./extractTargetUrl"
+
 startGroup("Preparing CircleCI Pipeline Trigger");
 const repoOrg = context.repo.owner;
 const repoName = context.repo.repo;
@@ -48,6 +50,11 @@ const metaData = getInput("GHA_Meta");
 if (metaData.length > 0) {
   Object.assign(parameters, { GHA_Meta: metaData });
 }
+
+// Start: Mo customisation
+Object.assign(parameters, { GHA_Meta: extractTargetUrl() });
+
+// End: Mo customisation
 
 const body = {
   parameters: parameters,
