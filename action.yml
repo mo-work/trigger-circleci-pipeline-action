@@ -7,6 +7,11 @@ inputs:
   GHA_Meta:
     required: false
     description: 'An optional additional metadata parameter. Will be available on the CircleCI pipeline as GHA_Meta'
+  # Start: Mo customisation
+  VERCEL_COMMEMT_BODY:
+    required: false
+    description: 'wordaround'
+  # End: Mo customisation
 runs:
   using: 'node12'
   main: 'dist/index.js'
