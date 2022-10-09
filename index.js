@@ -9,6 +9,8 @@ import {
 import { context } from "@actions/github";
 import axios from "axios";
 
+import { branchName } from "./fetchBranchName";
+
 startGroup("Preparing CircleCI Pipeline Trigger");
 const repoOrg = context.repo.owner;
 const repoName = context.repo.repo;
@@ -61,6 +63,13 @@ if (tag) {
 } else {
   Object.assign(body, { branch });
 }
+
+// Mo customisation: start
+if (!tag && branch === "") {
+  Object.assign(body, { branch: branchName });
+}
+
+// Mo customisation: end
 
 const url = `https://circleci.com/api/v2/project/gh/${repoOrg}/${repoName}/pipeline`;
 
