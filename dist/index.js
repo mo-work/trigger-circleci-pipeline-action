@@ -47,7 +47,7 @@ if (response && response.data && response.data.length >= 1) {
   branchName = "";
 }
 
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)("Sha:" + branchName);
+(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)("BranchName:" + branchName);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
 
 
