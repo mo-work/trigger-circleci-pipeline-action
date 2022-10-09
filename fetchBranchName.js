@@ -31,7 +31,7 @@ if (response && response.data && response.data.length >= 1) {
   branchName = "";
 }
 
-info("Sha:" + branchName);
+info("BranchName:" + branchName);
 endGroup();
 
 export { branchName };
