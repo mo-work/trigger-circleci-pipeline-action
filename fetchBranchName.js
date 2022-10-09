@@ -6,7 +6,7 @@ const auth = process.env.REPO_TOKEN;
 
 const octokit = new Octokit({ auth });
 
-const { payload: { repository: { owner: { login }, name } }, sha } = context;
+const { payload: { repository: { owner: { login }, name, default_branch } }, sha } = context;
 
 let response, branchName;
 
@@ -26,7 +26,7 @@ try {
 }
 
 if (response && response.data && response.data.length >= 1) {
-  branchName = response.data[0].name;
+  branchName = response.data[0].name === default_branch ? "" : response.data[0].name;
 } else {
   branchName = "";
 }
