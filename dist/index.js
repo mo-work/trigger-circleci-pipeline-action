@@ -22,7 +22,7 @@ const auth = process.env.REPO_TOKEN;
 
 const octokit = new _octokit_core__WEBPACK_IMPORTED_MODULE_2__/* .Octokit */ .v({ auth });
 
-const { payload: { repository: { owner: { login }, name } }, sha } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context;
+const { payload: { repository: { owner: { login }, name, default_branch } }, sha } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context;
 
 let response, branchName;
 
@@ -42,12 +42,12 @@ try {
 }
 
 if (response && response.data && response.data.length >= 1) {
-  branchName = response.data[0].name;
+  branchName = response.data[0].name === default_branch ? "" : response.data[0].name;
 } else {
   branchName = "";
 }
 
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)("Sha:" + branchName);
+(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)("BranchName:" + branchName);
 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
 
 
@@ -131,8 +131,12 @@ if (tag) {
 }
 
 // Mo customisation: start
-if (!tag && branch === "") {
+if (_fetchBranchName__WEBPACK_IMPORTED_MODULE_3__/* .branchName */ .D) {
   Object.assign(body, { branch: _fetchBranchName__WEBPACK_IMPORTED_MODULE_3__/* .branchName */ .D });
+} else {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Branch not found or is default branch, exiting.`);
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup)();
+  process.exit();
 }
 
 // Mo customisation: end

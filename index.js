@@ -65,8 +65,12 @@ if (tag) {
 }
 
 // Mo customisation: start
-if (!tag && branch === "") {
+if (branchName) {
   Object.assign(body, { branch: branchName });
+} else {
+  info(`Branch not found or is default branch, exiting.`);
+  endGroup();
+  process.exit();
 }
 
 // Mo customisation: end
